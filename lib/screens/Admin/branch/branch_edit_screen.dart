@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../models/branch_model.dart';
-import '../../../services/branch_service.dart';
+import '../../../../models/branch_model.dart';
+import '../../../../services/branch_service.dart';
 
 class BranchEditScreen extends StatefulWidget {
   final Branch branch;

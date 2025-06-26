@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../models/branch_model.dart';
-import '../../../services/branch_service.dart';
+import '../../../../models/branch_model.dart';
+import '../../../../services/branch_service.dart';
 import 'branch_edit_screen.dart';
 import 'branch_create_screen.dart';
 

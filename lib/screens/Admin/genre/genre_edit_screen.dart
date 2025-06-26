@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class GenreEditScreen extends StatefulWidget {
   final Genre genre;
 
-  const GenreEditScreen({Key? key, required this.genre}) : super(key: key);
+  const GenreEditScreen({super.key, required this.genre});
 
   @override
   State<GenreEditScreen> createState() => _GenreEditScreenState();

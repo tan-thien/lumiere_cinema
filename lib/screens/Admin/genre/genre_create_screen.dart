@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
 class GenreCreateScreen extends StatefulWidget {
-  const GenreCreateScreen({Key? key}) : super(key: key);
+  const GenreCreateScreen({super.key});
 
   @override
   State<GenreCreateScreen> createState() => _GenreCreateScreenState();

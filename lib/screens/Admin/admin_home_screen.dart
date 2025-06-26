@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'branch_screen.dart';
+import 'package:lumiere_cinema/screens/Admin/schedule/schedule_list_screen.dart';
+import 'branch/branch_screen.dart';
 import 'cinema/cinema_list_screen.dart';
 import 'genre/genre_list_screen.dart';
 import '../../services/auth_service.dart';
 import '../Admin/movie/movie_list_screen.dart';
 
-
 class AdminHomeScreen extends StatelessWidget {
-   AdminHomeScreen({super.key});
+  AdminHomeScreen({super.key});
 
   void _navigateTo(BuildContext context, Widget screen) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
@@ -27,42 +27,47 @@ class AdminHomeScreen extends StatelessWidget {
       _AdminFunction(
         title: 'Quản lý rạp phim',
         icon: Icons.theaters,
-        screen: CinemaListScreen(), 
+        screen: CinemaListScreen(),
       ),
-
       _AdminFunction(
         title: 'Quản lý thể loại phim',
         icon: Icons.category,
-        screen: GenreListScreen(), 
+        screen: GenreListScreen(),
       ),
 
       _AdminFunction(
         title: 'Quản lý phim',
         icon: Icons.movie,
-        screen: MovieListScreen(), 
+        screen: MovieListScreen(),
       ),
 
+      _AdminFunction(
+        title: 'Quản lý suất chiếu',
+        icon: Icons.movie_filter,
+        screen: ScheduleListScreen(),
+      ),
+      _AdminFunction(
+        title: 'Quản lý ghế ngồi',
+        icon: Icons.event_seat,
+        screen: Placeholder(), // TODO: Thay bằng màn hình UserScreen
+      ),
+      _AdminFunction(
+        title: 'Quản lý vé',
+        icon: Icons.confirmation_num,
+        screen: Placeholder(), // TODO: Thay bằng màn hình UserScreen
+      ),
       _AdminFunction(
         title: 'Quản lý người dùng',
         icon: Icons.person,
         screen: Placeholder(), // TODO: Thay bằng màn hình UserScreen
       ),
-      _AdminFunction(
-        title: 'Quản lý suất chiếu',
-        icon: Icons.movie_filter,
-        screen: Placeholder(), // TODO: Thay bằng màn hình ShowtimesScreen
-      ),
-      _AdminFunction(
-        title: 'Phòng chiếu',
-        icon: Icons.meeting_room,
-        screen: Placeholder(), // TODO: Thay bằng màn hình RoomsScreen
-      ),
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Trang quản lý Admin'),
-      
-              actions: [
+      appBar: AppBar(
+        title: const Text('Trang quản lý'),
+
+        actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             tooltip: 'Đăng xuất',
@@ -72,8 +77,71 @@ class AdminHomeScreen extends StatelessWidget {
             },
           ),
         ],
-      
       ),
+
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.deepPurple),
+              child: Text(
+                'Admin',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text('Trang chính'),
+              onTap: () => Navigator.pop(context), // đóng drawer
+            ),
+            ListTile(
+              leading: Icon(Icons.store),
+              title: Text('Quản lý chi nhánh'),
+              onTap: () => _navigateTo(context, const BranchScreen()),
+            ),
+            ListTile(
+              leading: Icon(Icons.theaters),
+              title: Text('Quản lý rạp phim'),
+              onTap: () => _navigateTo(context, const CinemaListScreen()),
+            ),
+            ListTile(
+              leading: Icon(Icons.store),
+              title: Text('Quản lý thể loại phim'),
+              onTap: () => _navigateTo(context, const GenreListScreen()),
+            ),
+            ListTile(
+              leading: Icon(Icons.movie),
+              title: Text('Quản lý phim'),
+              onTap: () => _navigateTo(context, MovieListScreen()),
+            ),
+            ListTile(
+              leading: Icon(Icons.movie_filter),
+              title: Text('Quản lý suất chiếu'),
+              onTap: () => _navigateTo(context, const ScheduleListScreen()),
+            ),
+            ListTile(
+              leading: Icon(Icons.event_seat),
+              title: Text('Quản lý ghế ngồi'),
+              onTap: () => _navigateTo(context, const BranchScreen()),
+            ),
+            ListTile(
+              leading: Icon(Icons.confirmation_num),
+              title: Text('Quản lý vé'),
+              onTap: () => _navigateTo(context, const BranchScreen()),
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Đăng xuất'),
+              onTap: () async {
+                Navigator.pop(context); // đóng drawer
+                await _authService.logout(context);
+              },
+            ),
+          ],
+        ),
+      ),
+
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.builder(

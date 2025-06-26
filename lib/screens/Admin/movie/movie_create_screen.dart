@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class MovieCreateScreen extends StatefulWidget {
   final VoidCallback onCreated;
-  MovieCreateScreen({required this.onCreated});
+  const MovieCreateScreen({super.key, required this.onCreated});
 
   @override
   _MovieCreateScreenState createState() => _MovieCreateScreenState();

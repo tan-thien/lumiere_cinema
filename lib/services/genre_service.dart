@@ -4,7 +4,7 @@ import '../models/genre.dart';
 import '../utils/api_constants.dart';
 
 class GenreService {
-  static const String baseUrl = "${ApiConstants.baseUrl}/genre";
+  static final  String baseUrl = "${ApiConstants.baseUrl}/genre";
 
   static Future<List<Genre>> getAllGenres() async {
     final response = await http.get(Uri.parse('$baseUrl/getall'));

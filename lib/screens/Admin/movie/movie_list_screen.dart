@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class MovieListScreen extends StatefulWidget {
+  const MovieListScreen({super.key});
+
   @override
   _MovieListScreenState createState() => _MovieListScreenState();
 }
@@ -54,15 +56,35 @@ class _MovieListScreenState extends State<MovieListScreen> {
           return ListTile(
             leading: CachedNetworkImage(
               imageUrl: movie.anhPhim,
-              width: 50,
-              height: 50,
+              width: 67,
+              height: 67,
               fit: BoxFit.cover,
               placeholder: (context, url) => CircularProgressIndicator(),
               errorWidget: (context, url, error) => Icon(Icons.broken_image),
             ),
 
             title: Text(movie.tenPhim),
-            subtitle: Text(movie.theLoaiTen ?? ''),
+
+            subtitle: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(movie.theLoaiTen ?? ''),
+      Row(
+        children: [
+          Icon(
+            movie.trangThai ? Icons.check_circle : Icons.cancel,
+            color: movie.trangThai ? Colors.green : Colors.red,
+            size: 18,
+          ),
+          SizedBox(width: 4),
+          Text(
+            movie.trangThai ? 'Đang hoạt động' : 'Ngừng chiếu',
+            style: TextStyle(fontSize: 12),
+          ),
+        ],
+      ),
+    ],
+  ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

@@ -7,6 +7,8 @@ import 'cinema_form_screen.dart';
 import 'cinema_edit_screen.dart';
 
 class CinemaListScreen extends StatefulWidget {
+  const CinemaListScreen({super.key});
+
   @override
   _CinemaListScreenState createState() => _CinemaListScreenState();
 }
@@ -26,7 +28,7 @@ class _CinemaListScreenState extends State<CinemaListScreen> {
     final branches = await BranchService.getAllBranches();
     final cinemasFuture = _cinemaService.getAllCinemas();
 
-    _branchMap = {for (var b in branches) b.id!: b.tenChiNhanh};
+    _branchMap = {for (var b in branches) b.id: b.tenChiNhanh};
 
     setState(() {
       _cinemas = cinemasFuture;
@@ -43,10 +45,12 @@ class _CinemaListScreenState extends State<CinemaListScreen> {
               : FutureBuilder<List<Cinema>>(
                 future: _cinemas,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting)
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
-                  if (snapshot.hasError)
+                  }
+                  if (snapshot.hasError) {
                     return Center(child: Text("Lỗi: ${snapshot.error}"));
+                  }
 
                   final cinemas = snapshot.data!;
                   return ListView.builder(

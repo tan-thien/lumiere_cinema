@@ -6,6 +6,8 @@ import 'genre_edit_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class GenreListScreen extends StatefulWidget {
+  const GenreListScreen({super.key});
+
   @override
   _GenreListScreenState createState() => _GenreListScreenState();
 }

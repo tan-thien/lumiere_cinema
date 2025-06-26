@@ -107,10 +107,12 @@ class _CinemaEditScreenState extends State<CinemaEditScreen> {
                       decoration: InputDecoration(labelText: 'Số lượng ghế'),
                       keyboardType: TextInputType.number,
                       validator: (value) {
-                        if (value == null || value.isEmpty)
+                        if (value == null || value.isEmpty) {
                           return 'Nhập số lượng ghế';
-                        if (int.tryParse(value) == null)
+                        }
+                        if (int.tryParse(value) == null) {
                           return 'Phải là số nguyên';
+                        }
                         return null;
                       },
                     ),

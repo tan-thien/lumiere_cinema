@@ -4,7 +4,7 @@ import '../models/cinema.dart';
 import '../utils/api_constants.dart';
 
 class CinemaService {
-  static const String baseUrl = "${ApiConstants.baseUrl}/cinema";
+  static final  String baseUrl = "${ApiConstants.baseUrl}/cinema";
 
   Future<List<Cinema>> getAllCinemas() async {
     final response = await http.get(Uri.parse('$baseUrl/getall'));
