@@ -1,0 +1,72 @@
+[
+  {
+    "_id": "684449aa1dda44e6534a2124",
+    "TenPhim": "Doraemon: Nobita và Vùng Đất Lý Tưởng Trên Bầu Trời",
+    "MoTa": "Doraemon và các bạn khám phá vùng đất bí ẩn trên bầu trời.",
+    "ThoiLuong": 110,
+    "Ngay": "2024-12-27T00:00:00.000Z",
+    "AnhPhim": "https://iguov8nhvyobj.vcdn.cloud/media/catalog/product/cache/1/image/1800x/doreamon-2024.jpg",
+    "trailerUrl": "https://youtu.be/Wmx6AwUCxqs?si=XJUuhcRfopEcGex_",
+    "TrangThai": false,
+    "MaTheLoai": {
+      "_id": "684423e81dda44e6534a20f4",
+      "TenTheLoai": "Hoạt hình"
+    }
+  },
+  {
+    "_id": "684449aa1dda44e6534a2125",
+    "TenPhim": "Inside Out 2",
+    "MoTa": "Riley bước vào tuổi dậy thì với nhiều cảm xúc mới lạ xuất hiện.",
+    "ThoiLuong": 100,
+    "Ngay": "2024-06-15T00:00:00.000Z",
+    "AnhPhim": "https://static.kino.de/wp-content/uploads/2024/04/inside-out-2.jpg",
+    "trailerUrl": "https://youtu.be/LeMVPcE4vW8",
+    "TrangThai": true,
+    "MaTheLoai": {
+      "_id": "684423e81dda44e6534a20f4",
+      "TenTheLoai": "Hoạt hình"
+    }
+  },
+  {
+    "_id": "684449aa1dda44e6534a2126",
+    "TenPhim": "Deadpool & Wolverine",
+    "MoTa": "Deadpool hợp tác với Wolverine trong một nhiệm vụ xuyên không gian và thời gian.",
+    "ThoiLuong": 130,
+    "Ngay": "2024-07-25T00:00:00.000Z",
+    "AnhPhim": "https://static1.colliderimages.com/wordpress/wp-content/uploads/2024/02/deadpool-wolverine.jpg",
+    "trailerUrl": "https://youtu.be/uJMCNJP2ipI",
+    "TrangThai": true,
+    "MaTheLoai": {
+      "_id": "684423e81dda44e6534a20f5",
+      "TenTheLoai": "Hành động"
+    }
+  },
+  {
+    "_id": "684449aa1dda44e6534a2127",
+    "TenPhim": "Despicable Me 4",
+    "MoTa": "Gru đối đầu với kẻ thù mới trong khi làm quen với cuộc sống gia đình.",
+    "ThoiLuong": 95,
+    "Ngay": "2024-07-03T00:00:00.000Z",
+    "AnhPhim": "https://lumiere-a.akamaihd.net/v1/images/p_despicableme4_19639_ea1cc616.jpeg",
+    "trailerUrl": "https://youtu.be/4fHRDDGtY-Q",
+    "TrangThai": true,
+    "MaTheLoai": {
+      "_id": "684423e81dda44e6534a20f4",
+      "TenTheLoai": "Hoạt hình"
+    }
+  },
+  {
+    "_id": "684449aa1dda44e6534a2128",
+    "TenPhim": "A Quiet Place: Day One",
+    "MoTa": "Khám phá ngày đầu tiên khi sinh vật săn âm thanh xuất hiện.",
+    "ThoiLuong": 98,
+    "Ngay": "2024-06-28T00:00:00.000Z",
+    "AnhPhim": "https://cdn.marvel.com/content/1x/quietplace_dayone.jpg",
+    "trailerUrl": "https://youtu.be/d1s3D_6nO2k",
+    "TrangThai": true,
+    "MaTheLoai": {
+      "_id": "684423e81dda44e6534a20f6",
+      "TenTheLoai": "Kinh dị"
+    }
+  }
+]

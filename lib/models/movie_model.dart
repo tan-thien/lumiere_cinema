@@ -27,7 +27,7 @@ class Movie {
     final theLoai = json['MaTheLoai'];
     return Movie(
       id: json['_id'],
-      tenPhim: json['TenPhim'],
+      tenPhim: json['TenPhim'] ?? 'Không rõ',
       moTa: json['MoTa'] ?? '',
       thoiLuong: json['ThoiLuong'],
       ngay: DateTime.parse(json['Ngay']),
@@ -35,7 +35,7 @@ class Movie {
       trailerUrl: json['trailerUrl'] ?? '',
       trangThai: json['TrangThai'],
       maTheLoai: theLoai is Map ? theLoai['_id'] : theLoai,
-      theLoaiTen: theLoai is Map ? theLoai['TenTheLoai'] : null,
+      theLoaiTen: theLoai is Map ? (theLoai['TenTheLoai'] ?? 'Không rõ') : 'Không rõ',
     );
   }
 
