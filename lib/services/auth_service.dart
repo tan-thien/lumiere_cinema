@@ -17,9 +17,23 @@ class AuthService {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final token = data['token'];
-      final user = Account.fromJson(data['user']);
-      return {'status': true, 'token': token, 'user': user};
+
+      if (data['status'] == true && data['user'] != null) {
+        return {
+          'status': true,
+          'user': Account.fromJson(data['user']),
+          'token': data['token'],
+        };
+      } else {
+        return {
+          'status': false,
+          'message': data['message'] ?? 'Đăng nhập thất bại',
+        };
+      }
+
+      // final token = data['token'];
+      // final user = Account.fromJson(data['user']);
+      // return {'status': true, 'token': token, 'user': user};
     } else {
       final errorData = jsonDecode(response.body);
       return {

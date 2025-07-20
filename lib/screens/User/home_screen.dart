@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ? const NowPlayingScreen()
               : const ComingSoonScreen(),
 
-          const SizedBox(height: 80,),
+          const SizedBox(height: 90,),
         ],
       ),
     );

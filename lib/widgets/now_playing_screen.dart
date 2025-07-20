@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lumiere_cinema/models/movie_model.dart';
 import 'package:lumiere_cinema/services/movie_service.dart';
+import 'package:lumiere_cinema/screens/User/movie/movie_detail_screen.dart';
 
 class NowPlayingScreen extends StatefulWidget {
   const NowPlayingScreen({super.key});
@@ -39,7 +40,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
         return GridView.builder(
           shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(), // để scroll ở ListView cha
+          physics:
+              const NeverScrollableScrollPhysics(), // để scroll ở ListView cha
           padding: const EdgeInsets.symmetric(horizontal: 12),
           itemCount: movies.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -51,50 +53,64 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
           itemBuilder: (context, index) {
             final movie = movies[index];
 
-return Container(
-  decoration: BoxDecoration(
-    color: Colors.white.withOpacity(0.05),
-    borderRadius: BorderRadius.circular(12),
-    border: Border.all(color: Colors.white24),
-  ),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      // 🟢 Ảnh poster chiếm hết chiều cao còn lại
-      Expanded(
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-          child: Image.network(
-            movie.anhPhim.isNotEmpty
-                ? movie.anhPhim
-                : 'https://via.placeholder.com/200x300?text=No+Image',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            errorBuilder: (_, __, ___) => const Icon(Icons.broken_image),
-          ),
-        ),
-      ),
-      // 🟡 Tên phim co giãn nếu dài, tránh tràn
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        child: Text(
-          movie.tenPhim,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Color.fromARGB(255, 0, 0, 0),
-          ),
-        ),
-      ),
-    ],
-  ),
-);
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => MovieDetailScreen(movie: movie),
+                  ),
+                );
+              },
 
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.05),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white24),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 🟢 Ảnh poster chiếm hết chiều cao còn lại
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                        child: Image.network(
+                          movie.anhPhim.isNotEmpty
+                              ? movie.anhPhim
+                              : 'https://via.placeholder.com/200x300?text=No+Image',
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          errorBuilder:
+                              (_, __, ___) => const Icon(Icons.broken_image),
+                        ),
+                      ),
+                    ),
+                    // 🟡 Tên phim co giãn nếu dài, tránh tràn
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
+                      child: Text(
+                        movie.tenPhim,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color.fromARGB(255, 0, 0, 0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
           },
         );
       },

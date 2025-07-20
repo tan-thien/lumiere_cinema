@@ -23,8 +23,10 @@ class _SplashScreenState extends State<SplashScreen> {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     final role = prefs.getString('role');
+     final userId = prefs.getString('userId');
+     print('🌟 userId from prefs: $userId');
 
-    if (token != null && role != null) {
+    if (token != null && role != null && userId != null) {
       // ✅ Nếu có token, điều hướng theo role
       if (role == 'admin') {
         Navigator.pushReplacement(

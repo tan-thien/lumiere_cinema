@@ -33,6 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
       await prefs.setString('role', user.role);
+      print('user.id = ${user.id}');
+      await prefs.setString('userId', user.id);
+      print('user.id = ${user.id}');
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Xin chào ${user.tenTK} (${user.role})')),

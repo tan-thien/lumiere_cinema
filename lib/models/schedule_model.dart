@@ -4,8 +4,9 @@ class Schedule {
   final bool trangThai;
   final String maPhim;
   final String maRap;
-  final String? tenPhim;   // Lấy từ populate
+  final String? tenPhim; // Lấy từ populate
   final String? tenRap;
+  final String? tenChiNhanh;
 
   Schedule({
     this.id,
@@ -15,6 +16,7 @@ class Schedule {
     required this.maRap,
     this.tenPhim,
     this.tenRap,
+    this.tenChiNhanh,
   });
 
   factory Schedule.fromJson(Map<String, dynamic> json) {
@@ -23,11 +25,17 @@ class Schedule {
       gioChieu: DateTime.parse(json['GioChieu']),
       trangThai: json['TrangThai'],
       maPhim: json['MaPhim'] is Map ? json['MaPhim']['_id'] : json['MaPhim'],
-      maRap: json['MaRap'] is Map
-    ? json['MaRap']['_id'] ?? ''
-    : json['MaRap'] ?? '',
+      maRap:
+          json['MaRap'] is Map
+              ? json['MaRap']['_id'] ?? ''
+              : json['MaRap'] ?? '',
       tenPhim: json['MaPhim'] is Map ? json['MaPhim']['TenPhim'] : null,
       tenRap: json['MaRap'] is Map ? json['MaRap']['TenRap'] : null,
+
+      tenChiNhanh:
+          json['MaRap'] is Map && json['MaRap']['MaChiNhanh'] is Map
+              ? json['MaRap']['MaChiNhanh']['TenChiNhanh']
+              : null, // ✅ lấy từ nested populate
     );
   }
 

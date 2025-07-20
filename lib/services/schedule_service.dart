@@ -79,4 +79,32 @@ class ScheduleService {
       throw Exception('Failed to delete schedule: ${res.body}');
     }
   }
+
+  /// ✅ Lấy lịch chiếu theo ID phim
+static Future<List<Schedule>> getSchedulesByMovieId(String movieId) async {
+  final res = await http.get(
+    Uri.parse('${ApiConstants.baseUrl}/schedule/by-movie/$movieId'),
+  );
+
+  if (res.statusCode == 200) {
+    final List data = json.decode(res.body);
+    return data.map((json) => Schedule.fromJson(json)).toList();
+  }
+
+  throw Exception('Failed to load schedules by movie');
+}
+/// ✅ Lấy lịch chiếu theo ID rạp
+static Future<List<Schedule>> getSchedulesByCinemaId(String cinemaId) async {
+  final res = await http.get(
+    Uri.parse('${ApiConstants.baseUrl}/schedule/by-cinema/$cinemaId'),
+  );
+
+  if (res.statusCode == 200) {
+    final List data = json.decode(res.body);
+    return data.map((json) => Schedule.fromJson(json)).toList();
+  }
+
+  throw Exception('Failed to load schedules by cinema');
+}
+
 }

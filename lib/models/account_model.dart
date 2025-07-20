@@ -13,13 +13,14 @@ class Account {
     required this.trangthai,
   });
 
-  factory Account.fromJson(Map<String, dynamic> json) {
-    return Account(
-      id: json['id'],
-      tenTK: json['TenTK'],
-      email: json['email'],
-      role: json['role'],
-      trangthai: json['trangthai'],
-    );
-  }
+factory Account.fromJson(Map<String, dynamic> json) {
+  return Account(
+    id: json['id']?.toString() ?? '',                      // ép sang String
+    tenTK: json['TenTK']?.toString() ?? 'Chưa có tên',      // fallback nếu thiếu
+    email: json['email']?.toString() ?? 'Không có email',
+    role: json['role']?.toString() ?? 'user',
+    trangthai: json['trangthai'] == true,                   // fallback false nếu null
+  );
+}
+
 }
