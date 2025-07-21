@@ -96,4 +96,9 @@ class AuthService {
       return {'status': false, 'message': 'Lỗi server: ${response.statusCode}'};
     }
   }
+
+    static Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
 }

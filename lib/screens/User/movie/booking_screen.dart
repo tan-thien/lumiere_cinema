@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:lumiere_cinema/services/ticket_service.dart';
 import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
+import 'package:intl/intl.dart';
 
 class BookingScreen extends StatefulWidget {
   final Movie movie;
@@ -66,79 +67,82 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
-void startPayPalCheckout() {
-  const vndToUsdRate = 24000;
-  const priceVnd = 50000;
+  void startPayPalCheckout() {
+    const vndToUsdRate = 24000;
+    const priceVnd = 50000;
 
-  // Tính danh sách item từ ghế đã chọn
-  final List<Map<String, dynamic>> items = _selectedSeats.map((seat) {
-    final priceUsd = priceVnd / vndToUsdRate;
-    return {
-      "name": seat.seatLabel ?? "Ghế",
-      "quantity": 1,
-      "price": priceUsd.toStringAsFixed(2),
-      "currency": "USD",
-    };
-  }).toList();
+    // Tính danh sách item từ ghế đã chọn
+    final List<Map<String, dynamic>> items =
+        _selectedSeats.map((seat) {
+          final priceUsd = priceVnd / vndToUsdRate;
+          return {
+            "name": seat.seatLabel ?? "Ghế",
+            "quantity": 1,
+            "price": priceUsd.toStringAsFixed(2),
+            "currency": "USD",
+          };
+        }).toList();
 
-  // ✅ Tính lại subtotal bằng cách cộng từng item price (tránh sai số)
-  double subtotal = items.fold(0.0, (sum, item) {
-    return sum + double.parse(item["price"]);
-  });
+    // ✅ Tính lại subtotal bằng cách cộng từng item price (tránh sai số)
+    double subtotal = items.fold(0.0, (sum, item) {
+      return sum + double.parse(item["price"]);
+    });
 
-  String subtotalStr = subtotal.toStringAsFixed(2);
+    String subtotalStr = subtotal.toStringAsFixed(2);
 
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (BuildContext context) => PaypalCheckoutView(
-        sandboxMode: true,
-        clientId: "AfwJlRu9yKhQRe-sZG2u1zKKPQ5YQLoJFYT9cO5fk9oeBlUQV40ALhAdebTtpW5juHbxxBCT8zhZENoa",
-        secretKey: "EP3BjWMcbooXTSCYZk5wOPotdA_kp35NJVLP5CKNe17ab_APS-3lqZFIwK9GhiTN1CVGEWJlo_fiFBlu",
-        transactions: [
-          {
-            "amount": {
-              "total": subtotalStr,
-              "currency": "USD",
-              "details": {
-                "subtotal": subtotalStr,
-                "shipping": "0",
-                "shipping_discount": "0",
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder:
+            (BuildContext context) => PaypalCheckoutView(
+              sandboxMode: true,
+              clientId:
+                  "AfwJlRu9yKhQRe-sZG2u1zKKPQ5YQLoJFYT9cO5fk9oeBlUQV40ALhAdebTtpW5juHbxxBCT8zhZENoa",
+              secretKey:
+                  "EP3BjWMcbooXTSCYZk5wOPotdA_kp35NJVLP5CKNe17ab_APS-3lqZFIwK9GhiTN1CVGEWJlo_fiFBlu",
+              transactions: [
+                {
+                  "amount": {
+                    "total": subtotalStr,
+                    "currency": "USD",
+                    "details": {
+                      "subtotal": subtotalStr,
+                      "shipping": "0",
+                      "shipping_discount": "0",
+                    },
+                  },
+                  "description": "Thanh toán vé xem phim Lumiere",
+                  "item_list": {"items": items},
+                },
+              ],
+              note: "Cảm ơn bạn đã sử dụng Lumiere Cinema!",
+              onSuccess: (Map params) async {
+                print("Thanh toán thành công: $params");
+                await bookTickets();
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Future.delayed(const Duration(milliseconds: 300), () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('✅ Thanh toán và đặt vé thành công!'),
+                    ),
+                  );
+                });
               },
-            },
-            "description": "Thanh toán vé xem phim Lumiere",
-            "item_list": {
-              "items": items,
-            },
-          },
-        ],
-        note: "Cảm ơn bạn đã sử dụng Lumiere Cinema!",
-        onSuccess: (Map params) async {
-          print("Thanh toán thành công: $params");
-          await bookTickets();
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          Future.delayed(const Duration(milliseconds: 300), () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('✅ Thanh toán và đặt vé thành công!')),
-            );
-          });
-        },
-        onError: (error) {
-          print("Lỗi PayPal: $error");
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('❌ Thanh toán thất bại')),
-          );
-        },
-        onCancel: () {
-          print('Thanh toán bị huỷ');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('🚫 Đã huỷ thanh toán')),
-          );
-        },
+              onError: (error) {
+                print("Lỗi PayPal: $error");
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('❌ Thanh toán thất bại')),
+                );
+              },
+              onCancel: () {
+                print('Thanh toán bị huỷ');
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('🚫 Đã huỷ thanh toán')),
+                );
+              },
+            ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   // 🧠 Gom nhóm ghế theo dòng (A, B, C,...)
   Map<String, List<ScheduleSeat>> groupSeatsByRow(List<ScheduleSeat> seats) {
@@ -179,7 +183,11 @@ void startPayPalCheckout() {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Đặt vé')),
+      appBar: AppBar(
+        title: const Text('Đặt vé'),
+        backgroundColor: const Color(0xFF1565C0),
+        foregroundColor: Colors.white,
+      ),
       body: FutureBuilder<List<ScheduleSeat>>(
         future: _seatsFuture,
         builder: (context, snapshot) {
@@ -196,12 +204,47 @@ void startPayPalCheckout() {
           ).format(widget.schedule.gioChieu);
 
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
                 padding: const EdgeInsets.all(16),
-                child: Text(
-                  '🎬 ${widget.movie.tenPhim}\n🕒 $gioChieuFormatted',
-                  style: const TextStyle(fontSize: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      widget.movie.tenPhim,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1565C0),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      gioChieuFormatted,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildLegendBox(const Color(0xFFFFA726), 'Đã đặt'),
+                        const SizedBox(width: 16),
+                        _buildLegendBox(const Color(0xFF1565C0), 'Đang chọn'),
+                        const SizedBox(width: 16),
+                        _buildLegendBox(
+                          Colors.white,
+                          'Còn trống',
+                          border: true,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               Expanded(
@@ -218,7 +261,6 @@ void startPayPalCheckout() {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      // Thanh ngang nhỏ
                       Center(
                         child: Container(
                           width: 100,
@@ -230,8 +272,6 @@ void startPayPalCheckout() {
                         ),
                       ),
                       const SizedBox(height: 16),
-
-                      // Khu vực ghế - cuộn ngang/dọc
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
@@ -242,7 +282,6 @@ void startPayPalCheckout() {
                                   groupedSeats.entries.map((entry) {
                                     final row = entry.key;
                                     final rowSeats = entry.value;
-
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(
                                         vertical: 6,
@@ -269,9 +308,11 @@ void startPayPalCheckout() {
                                                       _selectedSeats.contains(
                                                         seat,
                                                       );
+                                                  final bool isReserved =
+                                                      seat.isReserved;
                                                   return GestureDetector(
                                                     onTap:
-                                                        seat.isReserved
+                                                        isReserved
                                                             ? null
                                                             : () => toggleSeat(
                                                               seat,
@@ -283,13 +324,24 @@ void startPayPalCheckout() {
                                                           Alignment.center,
                                                       decoration: BoxDecoration(
                                                         color:
-                                                            seat.isReserved
-                                                                ? Colors.grey
+                                                            isReserved
+                                                                ? const Color(
+                                                                  0xFFFFA726,
+                                                                )
                                                                 : isSelected
-                                                                ? Colors.blue
+                                                                ? const Color(
+                                                                  0xFF1565C0,
+                                                                )
                                                                 : Colors.white,
                                                         border: Border.all(
-                                                          color: Colors.black,
+                                                          color:
+                                                              isReserved
+                                                                  ? const Color(
+                                                                    0xFFFFA726,
+                                                                  )
+                                                                  : const Color(
+                                                                    0xFFFFA726,
+                                                                  ),
                                                         ),
                                                         borderRadius:
                                                             BorderRadius.circular(
@@ -300,7 +352,8 @@ void startPayPalCheckout() {
                                                         seat.seatLabel ?? '',
                                                         style: TextStyle(
                                                           color:
-                                                              seat.isReserved
+                                                              isReserved ||
+                                                                      isSelected
                                                                   ? Colors.white
                                                                   : Colors
                                                                       .black,
@@ -325,26 +378,58 @@ void startPayPalCheckout() {
                   ),
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // 👇 Thêm phần tổng cộng vào đây
+                    if (_selectedSeats.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Tổng cộng:',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            Text(
+                              '${NumberFormat.currency(locale: 'vi_VN', symbol: '₫').format(_selectedSeats.length * 50000)} (${_selectedSeats.length} vé)',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
-                // child: ElevatedButton.icon(
-                //   onPressed: _selectedSeats.isEmpty ? null : bookTickets,
-                //   icon: const Icon(Icons.payment),
-                //   label: Text('Đặt ${_selectedSeats.length} vé'),
-                //   style: ElevatedButton.styleFrom(
-                //     minimumSize: const Size.fromHeight(48),
-                //   ),
-                // ),
-                child: ElevatedButton.icon(
-                  onPressed:
-                      _selectedSeats.isEmpty ? null : startPayPalCheckout,
-                  icon: const Icon(Icons.payment),
-                  label: Text('Thanh toán ${_selectedSeats.length} vé'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
-                  ),
+                    // 👇 Nút thanh toán giữ nguyên
+                    ElevatedButton.icon(
+                      onPressed:
+                          _selectedSeats.isEmpty ? null : startPayPalCheckout,
+                      icon: const Icon(Icons.payment),
+                      label: Text('Thanh toán ${_selectedSeats.length} vé'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            _selectedSeats.isEmpty
+                                ? Colors.grey
+                                : const Color(0xFF1565C0),
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size.fromHeight(50),
+                        textStyle: const TextStyle(fontSize: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -353,4 +438,22 @@ void startPayPalCheckout() {
       ),
     );
   }
+}
+
+Widget _buildLegendBox(Color color, String label, {bool border = false}) {
+  return Row(
+    children: [
+      Container(
+        width: 20,
+        height: 20,
+        decoration: BoxDecoration(
+          color: color,
+          border: border ? Border.all(color: const Color(0xFFFFA726)) : null,
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ),
+      const SizedBox(width: 4),
+      Text(label, style: const TextStyle(fontSize: 14)),
+    ],
+  );
 }
