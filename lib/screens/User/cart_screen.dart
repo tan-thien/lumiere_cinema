@@ -24,7 +24,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
 Widget build(BuildContext context) {
   return Scaffold(
-    appBar: AppBar(title: const Text("Dịch vụ"),centerTitle: true,),
+    appBar: AppBar(title: const Text("Sản Phẩm"),centerTitle: true,),
     body: FutureBuilder<List<Service>>(
       future: futureServices,
       builder: (context, snapshot) {

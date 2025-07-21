@@ -66,77 +66,79 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
-  void startPayPalCheckout() {
-    final total = (_selectedSeats.length * 50000 / 24000).toStringAsFixed(
-      2,
-    ); // chuyển VND → USD (tỉ giá 1USD ~ 24,000 VND)
+void startPayPalCheckout() {
+  const vndToUsdRate = 24000;
+  const priceVnd = 50000;
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder:
-            (BuildContext context) => PaypalCheckoutView(
-              sandboxMode: true,
-              clientId:
-                  "AfwJlRu9yKhQRe-sZG2u1zKKPQ5YQLoJFYT9cO5fk9oeBlUQV40ALhAdebTtpW5juHbxxBCT8zhZENoa",
-              secretKey:
-                  "EP3BjWMcbooXTSCYZk5wOPotdA_kp35NJVLP5CKNe17ab_APS-3lqZFIwK9GhiTN1CVGEWJlo_fiFBlu",
-              transactions: [
-                {
-                  "amount": {
-                    "total": total,
-                    "currency": "USD",
-                    "details": {
-                      "subtotal": total,
-                      "shipping": '0',
-                      "shipping_discount": 0,
-                    },
-                  },
-                  "description": "Thanh toán vé xem phim Lumiere",
-                  "item_list": {
-                    "items":
-                        _selectedSeats.map((seat) {
-                          return {
-                            "name": seat.seatLabel ?? "Ghế",
-                            "quantity": 1,
-                            "price": (50000 / 24000).toStringAsFixed(2),
-                            "currency": "USD",
-                          };
-                        }).toList(),
-                  },
-                },
-              ],
-              note: "Cảm ơn bạn đã sử dụng Lumiere Cinema!",
-              onSuccess: (Map params) async {
-                print("Thanh toán thành công: $params");
-                await bookTickets();
+  // Tính danh sách item từ ghế đã chọn
+  final List<Map<String, dynamic>> items = _selectedSeats.map((seat) {
+    final priceUsd = priceVnd / vndToUsdRate;
+    return {
+      "name": seat.seatLabel ?? "Ghế",
+      "quantity": 1,
+      "price": priceUsd.toStringAsFixed(2),
+      "currency": "USD",
+    };
+  }).toList();
 
-                Navigator.of(context).popUntil((route) => route.isFirst);
+  // ✅ Tính lại subtotal bằng cách cộng từng item price (tránh sai số)
+  double subtotal = items.fold(0.0, (sum, item) {
+    return sum + double.parse(item["price"]);
+  });
 
-                // Đợi một chút rồi hiện snackbar ở Home
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('✅ Thanh toán và đặt vé thành công!'),
-                    ),
-                  );
-                });
+  String subtotalStr = subtotal.toStringAsFixed(2);
+
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (BuildContext context) => PaypalCheckoutView(
+        sandboxMode: true,
+        clientId: "AfwJlRu9yKhQRe-sZG2u1zKKPQ5YQLoJFYT9cO5fk9oeBlUQV40ALhAdebTtpW5juHbxxBCT8zhZENoa",
+        secretKey: "EP3BjWMcbooXTSCYZk5wOPotdA_kp35NJVLP5CKNe17ab_APS-3lqZFIwK9GhiTN1CVGEWJlo_fiFBlu",
+        transactions: [
+          {
+            "amount": {
+              "total": subtotalStr,
+              "currency": "USD",
+              "details": {
+                "subtotal": subtotalStr,
+                "shipping": "0",
+                "shipping_discount": "0",
               },
-              onError: (error) {
-                print("Lỗi PayPal: $error");
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('❌ Thanh toán thất bại')),
-                );
-              },
-              onCancel: () {
-                print('Thanh toán bị huỷ');
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('🚫 Đã huỷ thanh toán')),
-                );
-              },
-            ),
+            },
+            "description": "Thanh toán vé xem phim Lumiere",
+            "item_list": {
+              "items": items,
+            },
+          },
+        ],
+        note: "Cảm ơn bạn đã sử dụng Lumiere Cinema!",
+        onSuccess: (Map params) async {
+          print("Thanh toán thành công: $params");
+          await bookTickets();
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          Future.delayed(const Duration(milliseconds: 300), () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('✅ Thanh toán và đặt vé thành công!')),
+            );
+          });
+        },
+        onError: (error) {
+          print("Lỗi PayPal: $error");
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('❌ Thanh toán thất bại')),
+          );
+        },
+        onCancel: () {
+          print('Thanh toán bị huỷ');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('🚫 Đã huỷ thanh toán')),
+          );
+        },
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   // 🧠 Gom nhóm ghế theo dòng (A, B, C,...)
   Map<String, List<ScheduleSeat>> groupSeatsByRow(List<ScheduleSeat> seats) {
