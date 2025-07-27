@@ -4,16 +4,17 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 
 class ApiConstants {
+  static const bool isProduction = true; // 🔄 Bật/tắt giữa local và server thật
+
   static String get baseUrl {
-    if (kIsWeb) {
-      return "http://localhost:3000"; // Flutter Web chạy trên trình duyệt
-    } else if (Platform.isAndroid) {
-      return "http://10.0.2.2:3000";  // Android Emulator
+    if (isProduction) {
+      return "https://backend-cinema-u7ai.onrender.com";
     } else {
-      return "http://192.168.1.86:3000"; // iOS Simulator hoặc thiết bị thật
+      return "http://192.168.1.86:3000"; // Local
     }
   }
 
   static String get loginUrl => "$baseUrl/login";
 }
+
 

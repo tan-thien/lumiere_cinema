@@ -40,7 +40,7 @@ class _TicketHistoryScreenState extends State<TicketHistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lịch sử đặt vé'),
+        title: Text('Lịch sử đặt vé', style: TextStyle(color: Colors.black,), ),
         backgroundColor: Colors.blueAccent,
         centerTitle: true,
       ),

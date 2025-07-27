@@ -5,6 +5,8 @@ import 'package:lumiere_cinema/screens/User/user_home_screen.dart';
 import '../services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lumiere_cinema/screens/register_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -235,8 +237,70 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
+
+                      
+
                     ],
+                    
                   ),
+                  const SizedBox(height: 25),
+Row(
+  children: [
+    Expanded(child: Divider(color: Colors.black54)),
+    const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      child: Text(
+        'hoặc đăng nhập bằng',
+        style: TextStyle(color: Colors.black54),
+      ),
+    ),
+    Expanded(child: Divider(color: Colors.black54)),
+  ],
+),
+
+const SizedBox(height: 15),
+Row(
+  mainAxisAlignment: MainAxisAlignment.center,
+  children: [
+    // Facebook
+    GestureDetector(
+      onTap: () {
+        // TODO: thêm logic đăng nhập Facebook nếu có
+      },
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.blue[800],
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          FontAwesomeIcons.facebookF,
+          color: Colors.white,
+          size: 20,
+        ),
+      ),
+    ),
+    const SizedBox(width: 20),
+    // Google
+    GestureDetector(
+      onTap: () {
+        // TODO: thêm logic đăng nhập Google nếu có
+      },
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.red[600],
+          shape: BoxShape.circle,
+        ),
+        child: const Icon(
+          FontAwesomeIcons.google,
+          color: Colors.white,
+          size: 20,
+        ),
+      ),
+    ),
+  ],
+),
                 ],
               ),
             ),

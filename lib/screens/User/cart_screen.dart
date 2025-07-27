@@ -29,6 +29,7 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Sản Phẩm"),
+        automaticallyImplyLeading: false,
         centerTitle: true,
         actions: [
           Padding(

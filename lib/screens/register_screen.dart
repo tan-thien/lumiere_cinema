@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart'; // <- thêm dòng này
 import '../utils/api_constants.dart';
 import 'login_screen.dart';
 
@@ -17,6 +18,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   bool _isLoading = false;
+  bool _isPrivacyAccepted = false; // <- thêm biến này
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
@@ -70,7 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // Ảnh nền có gradient
+          // Ảnh nền
           SizedBox(
             height: screenHeight * 0.35,
             width: double.infinity,
@@ -91,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
 
-          // Container trắng có nội dung
+          // Container chính
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -106,7 +108,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               child: SingleChildScrollView(
                 child: Form(
-                  key: _formKey, // Gắn Form key
+                  key: _formKey,
                   child: Column(
                     children: [
                       const SizedBox(height: 12),
@@ -120,26 +122,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const SizedBox(height: 24),
                       TextFormField(
                         controller: _tenTKController,
-                        decoration: InputDecoration(
-                          labelText: 'Tên tài khoản',
-                          prefixIcon: const Icon(Icons.person),
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelStyle: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: const BorderSide(
-                              color: Colors.black,width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: const BorderSide(
-                              color: Colors.deepPurple,
-                            ),
-                          ),
+                        decoration: _buildInputDecoration(
+                          'Tên tài khoản',
+                          Icons.person,
                         ),
                         validator:
                             (value) =>
@@ -147,64 +132,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     ? 'Vui lòng nhập tên tài khoản'
                                     : null,
                       ),
-
                       const SizedBox(height: 16),
-
                       TextFormField(
                         controller: _emailController,
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          prefixIcon: const Icon(Icons.email),
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelStyle: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: const BorderSide(
-                              color: Colors.black,width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: const BorderSide(
-                              color: Colors.deepPurple,
-                            ),
-                          ),
-                        ),
+                        decoration: _buildInputDecoration('Email', Icons.email),
                         validator:
                             (value) =>
                                 value == null || value.isEmpty
                                     ? 'Vui lòng nhập email'
                                     : null,
                       ),
-
                       const SizedBox(height: 16),
-
                       TextFormField(
                         controller: _passController,
                         obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: 'Mật khẩu',
-                          prefixIcon: const Icon(Icons.lock),
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelStyle: const TextStyle(
-                            fontWeight: FontWeight.w500,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: const BorderSide(
-                              color: Colors.black,width: 1,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                            borderSide: const BorderSide(
-                              color: Colors.deepPurple,
-                            ),
-                          ),
+                        decoration: _buildInputDecoration(
+                          'Mật khẩu',
+                          Icons.lock,
                         ),
                         validator:
                             (value) =>
@@ -212,14 +156,71 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     ? 'Mật khẩu ít nhất 6 ký tự'
                                     : null,
                       ),
+                      const SizedBox(height: 16),
 
-                      const SizedBox(height: 30),
+                      // Checkbox điều khoản
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            value: _isPrivacyAccepted,
+                            onChanged: (value) {
+                              setState(() {
+                                _isPrivacyAccepted = value ?? false;
+                              });
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () async {
+                                const url =
+                                    'https://www.freeprivacypolicy.com/live/91ebc720-3ed8-4cc1-871f-d6a2ea3e697c';
+                                if (await canLaunchUrl(Uri.parse(url))) {
+                                  await launchUrl(
+                                    Uri.parse(url),
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
+                              },
+                              child: RichText(
+                                text: const TextSpan(
+                                  text: 'Tôi đồng ý với ',
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 14,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: 'chính sách bảo mật',
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20),
+
+                      // Nút đăng ký
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _isLoading ? null : _register,
+                          onPressed:
+                              _isLoading || !_isPrivacyAccepted
+                                  ? null
+                                  : _register,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.purple.shade50,
+                            backgroundColor: Colors.blue[900],
                             foregroundColor: Colors.black,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
@@ -231,10 +232,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   ? const CircularProgressIndicator(
                                     color: Colors.white,
                                   )
-                                  : const Text('Đăng ký'),
+                                  : const Text(
+                                    'Đăng ký',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                         ),
                       ),
+
                       const SizedBox(height: 16),
+
+                      // Điều hướng tới đăng nhập
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -272,7 +279,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               );
                             },
-                            child: const Text('Đăng nhập'),
+                            child: const Text(
+                              'Đăng nhập',
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -283,6 +297,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  InputDecoration _buildInputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon),
+      filled: true,
+      fillColor: Colors.white,
+      labelStyle: const TextStyle(fontWeight: FontWeight.w500),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(color: Colors.black, width: 1),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(30),
+        borderSide: const BorderSide(color: Colors.blueAccent),
       ),
     );
   }
