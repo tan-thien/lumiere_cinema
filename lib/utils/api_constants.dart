@@ -10,7 +10,7 @@ class ApiConstants {
     if (isProduction) {
       return "https://backend-cinema-u7ai.onrender.com";
     } else {
-      return "http://192.168.1.86:3000"; // Local
+      return "http://0.0.0.0:3000"; // Local
     }
   }
 
